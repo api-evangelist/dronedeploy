@@ -1,0 +1,116 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: DroneDeploy
+providerId: dronedeploy
+created: '2026-07-04'
+modified: '2026-07-04'
+reconciled: false
+tags:
+- Drone Mapping
+- Reality Capture
+- Aerial Analytics
+- Geospatial
+- Plans
+description: >-
+  DroneDeploy sells its reality-capture platform on a per-seat subscription with
+  published Individual and Advanced tiers plus a contact-sales Enterprise tier.
+  Processing is metered by imagery (images per map) and Gigapixels of annual
+  processing volume. Crucially, the developer GraphQL API is NOT part of the
+  self-serve plans: API access is granted only to Enterprise and Developer Partner
+  accounts through DroneDeploy Sales/Support. Published seat prices below are from
+  DroneDeploy's public pricing page and third-party summaries and are not reconciled.
+notes: >-
+  API key issuance requires an Enterprise or Developer Partner agreement - there is
+  no self-serve API tier. Verify current seat prices, image/Gigapixel allowances, and
+  API entitlement on the DroneDeploy pricing page and with Sales during reconciliation.
+sources:
+- https://www.dronedeploy.com/pricing
+- https://developer-docs.dronedeploy.com/api/authentication
+- https://developer-docs.dronedeploy.com/api/introduction
+plans:
+- id: dronedeploy-individual
+  name: Individual
+  type: paid
+  description: >-
+    Entry per-seat plan for solo mappers - drone map capture, 2D/3D reality capture,
+    and core analytics. Roughly $329/seat/month billed annually, with allowances such
+    as up to ~3,000 images per map and a bounded annual Gigapixel processing budget.
+    Does not include developer API access.
+  entries:
+  - label: Per Seat Subscription
+    name: individual_seat
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: '329'
+    userMultiplied: true
+  - label: Images Per Map
+    name: individual_images_per_map
+    type: usage
+    metric: images
+    limit: 3000
+    timeFrame: map
+    geo: global
+    unit: 1
+    price: included
+    userMultiplied: false
+  elements:
+  - name: Drone Map Capture
+  - name: 2D and 3D Reality Capture
+  - name: Core Analytics and Measurements
+- id: dronedeploy-advanced
+  name: Advanced
+  type: paid
+  description: >-
+    Higher per-seat tier adding capabilities such as Cut/Fill vs Design Surface,
+    radiometric thermal, unlimited GCP mapping, and vertical facade inspection.
+    Priced above Individual; some capabilities require a custom quote. Does not by
+    itself grant developer API access.
+  entries:
+  - label: Per Seat Subscription
+    name: advanced_seat
+    type: flat
+    metric: seat
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: contact sales (above Individual tier)
+    userMultiplied: true
+  elements:
+  - name: Cut/Fill vs Design Surface
+  - name: Radiometric Thermal
+  - name: Unlimited GCP Mapping
+  - name: Vertical Facade Inspection
+- id: dronedeploy-enterprise
+  name: Enterprise / Developer Partner
+  type: enterprise
+  description: >-
+    Custom contract for organizations, including SSO, admin controls, higher
+    processing volumes, and - importantly - access to the developer GraphQL API and
+    legacy REST APIs. API keys are issued only to Enterprise or Developer Partner
+    accounts. Pricing is negotiated with Sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: GraphQL API Access
+  - name: Legacy REST APIs
+  - name: SSO and Admin Controls
+  - name: Custom Processing Volume
+  - name: Priority Support and SLAs
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

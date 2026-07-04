@@ -1,0 +1,98 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: DroneDeploy
+providerId: dronedeploy
+created: '2026-07-04'
+modified: '2026-07-04'
+reconciled: false
+tags:
+- Drone Mapping
+- Reality Capture
+- Aerial Analytics
+- Geospatial
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of DroneDeploy spend. DroneDeploy is a subscription SaaS billed
+  primarily per seat (Individual and Advanced tiers) with processing metered by
+  imagery volume (images per map, annual Gigapixels). The developer GraphQL API
+  carries no separate per-call fee - it is an entitlement of an Enterprise or
+  Developer Partner agreement, so its cost is bundled into the negotiated contract.
+  The dominant cost drivers are the number of seats, the map processing volume
+  (Gigapixels), and any premium capability tiers.
+notes: >-
+  Per-unit processing rates and enterprise contract pricing are not reconciled here;
+  verify on the DroneDeploy pricing page and with Sales. There is no metered API usage
+  charge documented - API access is gated by contract, not billed per request.
+sources:
+- https://www.dronedeploy.com/pricing
+- https://developer-docs.dronedeploy.com/api/authentication
+- https://developer-docs.dronedeploy.com/api/introduction
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: DroneDeploy
+serviceCategory: Geospatial and Reality Capture
+billingModel:
+  pricingCategory: Subscription-Based
+  billingFrequency: Annual
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+focusColumns:
+  ServiceName: DroneDeploy Platform
+  ServiceCategory: Geospatial and Reality Capture
+  ProviderName: DroneDeploy
+  PublisherName: DroneDeploy
+  InvoiceIssuerName: DroneDeploy
+  BillingCurrency: USD
+  ChargeCategory: Purchase
+  PricingCategory: Subscription-Based
+meters:
+- name: seats
+  description: Per-user subscription seats (Individual or Advanced tier), the primary billed unit.
+  unit: seats
+  aggregation: sum
+  dimensions:
+  - account
+  - plan
+- name: processing_volume
+  description: Map processing volume metered in Gigapixels against the annual plan allowance.
+  unit: gigapixels
+  aggregation: sum
+  dimensions:
+  - account
+  - project
+- name: images_processed
+  description: Source images ingested and processed into maps; bounded per map by plan tier.
+  unit: images
+  aggregation: sum
+  dimensions:
+  - account
+  - plan
+- name: exports_generated
+  description: Map/report exports produced via the API or app; work is asynchronous and draws on processing capacity.
+  unit: exports
+  aggregation: sum
+  dimensions:
+  - account
+  - plan
+principles:
+- name: Visibility
+  description: Track seats in use, Gigapixels processed, and images per map against plan allowances; API usage itself is not separately metered.
+- name: Allocation
+  description: Map seats and projects to teams/sites so processing volume and seat cost map to internal cost centers.
+- name: Optimization
+  description: Right-size seat counts and tiers, batch imagery to stay within images-per-map and Gigapixel allowances, and export only the layers you need.
+- name: Accountability
+  description: Assign owners per project/organization; review annual seat and processing commitments against actual capture volume before renewal.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

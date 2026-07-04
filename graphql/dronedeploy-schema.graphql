@@ -1,0 +1,369 @@
+"""
+DroneDeploy GraphQL Schema (partial / modeled)
+
+Endpoint: https://www.dronedeploy.com/graphql
+Auth:     Authorization: Bearer <api_key>
+
+This schema captures the DroneDeploy developer GraphQL API. Operations and fields marked
+CONFIRMED appear directly in the public developer documentation
+(developer-docs.dronedeploy.com). Everything else is MODELED from the documented schema
+structure (QueryRoot / MutationRoot, the `node` interface, Relay pagination) and the
+platform's features - the fully introspected schema is gated behind the Enterprise
+GraphiQL console (https://www.dronedeploy.com/graphiql/).
+"""
+
+# ─────────────────────────────────────────────
+# Scalars
+# ─────────────────────────────────────────────
+
+scalar DateTime
+scalar JSON
+scalar URL
+scalar Upload
+
+# ─────────────────────────────────────────────
+# Enums
+# ─────────────────────────────────────────────
+
+"""Processing status shared by plans, exports, and reports. CONFIRMED value: COMPLETE."""
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETE
+  FAILED
+  CANCELLED
+}
+
+"""Export output layer (CONFIRMED: `layer` is the only required export parameter)."""
+enum ExportLayer {
+  ORTHOMOSAIC
+  ELEVATION
+  PLANT_HEALTH
+  TERRAIN
+  POINT_CLOUD
+  CONTOURS
+  REPORT
+}
+
+enum ExportFileFormat {
+  GEOTIFF
+  JPG
+  PNG
+  PDF
+  LAS
+  DXF
+  SHP
+}
+
+enum IssueStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum AnnotationType {
+  POINT
+  LINE
+  POLYGON
+  VOLUME
+}
+
+# ─────────────────────────────────────────────
+# Interfaces
+# ─────────────────────────────────────────────
+
+"""CONFIRMED: node(id) returns a Node exposing only `id`; use inline fragments for fields."""
+interface Node {
+  id: ID!
+}
+
+# ─────────────────────────────────────────────
+# Pagination (Relay connections) — CONFIRMED
+# ─────────────────────────────────────────────
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean
+  startCursor: String
+  endCursor: String
+}
+
+type GeoPoint {
+  lat: Float
+  lng: Float
+}
+
+# ─────────────────────────────────────────────
+# Users & Organizations
+# ─────────────────────────────────────────────
+
+"""CONFIRMED: `viewer` is the root context for the authenticated user."""
+type Viewer {
+  id: ID!
+  username: String            # CONFIRMED
+  email: String               # modeled
+  organization: Organization  # CONFIRMED
+}
+
+type User implements Node {
+  id: ID!
+  username: String            # CONFIRMED (Export.user.username)
+  email: String               # modeled
+}
+
+type Organization implements Node {
+  id: ID!
+  name: String                                                  # modeled
+  plans(first: Int, after: String): MapPlanConnection           # CONFIRMED
+  projects(first: Int, after: String): ProjectConnection        # modeled
+  members(first: Int, after: String): UserConnection            # modeled
+}
+
+type UserConnection {
+  pageInfo: PageInfo!
+  edges: [UserEdge!]!
+}
+type UserEdge { cursor: String!  node: User }
+
+# ─────────────────────────────────────────────
+# Projects & Plans
+# ─────────────────────────────────────────────
+
+"""A project groups related plans/maps for a site (modeled)."""
+type Project implements Node {
+  id: ID!
+  name: String
+  dateCreation: DateTime
+  location: GeoPoint
+  plans(first: Int, after: String): MapPlanConnection
+}
+
+type ProjectConnection {
+  pageInfo: PageInfo!
+  edges: [ProjectEdge!]!
+}
+type ProjectEdge { cursor: String!  node: Project }
+
+"""
+CONFIRMED type. A MapPlan is a flight plan / processed map. Fields name, location,
+geometry, dateCreation, imageCount, status, and exports are shown in the docs.
+"""
+type MapPlan implements Node {
+  id: ID!
+  name: String                                              # CONFIRMED
+  location: GeoPoint                                         # CONFIRMED
+  geometry: GeoPoint                                         # CONFIRMED
+  dateCreation: DateTime                                    # CONFIRMED
+  imageCount: Int                                           # CONFIRMED
+  status: ProcessingStatus                                  # CONFIRMED
+  exports(first: Int, after: String): ExportConnection      # CONFIRMED
+  images(first: Int, after: String): ImageConnection        # modeled
+  annotations(first: Int, after: String): IssueConnection   # modeled
+  reports(first: Int, after: String): ReportConnection      # modeled
+}
+
+type MapPlanConnection {
+  pageInfo: PageInfo!         # CONFIRMED
+  edges: [MapPlanEdge!]!      # CONFIRMED
+}
+type MapPlanEdge {
+  cursor: String!             # CONFIRMED
+  node: MapPlan               # CONFIRMED
+}
+
+# ─────────────────────────────────────────────
+# Exports  — CONFIRMED
+# ─────────────────────────────────────────────
+
+type ExportParameters {
+  layer: ExportLayer!         # CONFIRMED (only required parameter)
+  projection: String          # CONFIRMED
+  merge: Boolean              # CONFIRMED
+  contourInterval: Float      # CONFIRMED
+  fileFormat: ExportFileFormat # CONFIRMED
+  resolution: Float           # CONFIRMED
+  webhook: Webhook            # CONFIRMED (called when export COMPLETE)
+}
+
+type Export implements Node {
+  id: ID!                     # CONFIRMED
+  user: User                  # CONFIRMED (user.username)
+  parameters: ExportParameters # CONFIRMED
+  status: ProcessingStatus    # CONFIRMED
+  dateCreation: DateTime      # CONFIRMED
+  downloadPath: String        # CONFIRMED
+}
+
+type ExportConnection {
+  pageInfo: PageInfo!
+  edges: [ExportEdge!]!       # CONFIRMED
+}
+type ExportEdge { cursor: String!  node: Export }
+
+# ─────────────────────────────────────────────
+# Images / Uploads (modeled)
+# ─────────────────────────────────────────────
+
+type Image implements Node {
+  id: ID!
+  filename: String
+  location: GeoPoint
+  captureTime: DateTime
+  downloadPath: String
+}
+
+type ImageConnection {
+  pageInfo: PageInfo!
+  edges: [ImageEdge!]!
+}
+type ImageEdge { cursor: String!  node: Image }
+
+# ─────────────────────────────────────────────
+# Annotations / Issues (Issue type CONFIRMED; fields modeled)
+# ─────────────────────────────────────────────
+
+type Issue implements Node {
+  id: ID!
+  title: String
+  description: String
+  type: AnnotationType
+  status: IssueStatus
+  geometry: JSON
+  user: User
+  dateCreation: DateTime
+}
+
+type IssueConnection {
+  pageInfo: PageInfo!
+  edges: [IssueEdge!]!
+}
+type IssueEdge { cursor: String!  node: Issue }
+
+# ─────────────────────────────────────────────
+# Reports (modeled)
+# ─────────────────────────────────────────────
+
+type Report implements Node {
+  id: ID!
+  name: String
+  type: String
+  status: ProcessingStatus
+  downloadPath: String
+  dateCreation: DateTime
+}
+
+type ReportConnection {
+  pageInfo: PageInfo!
+  edges: [ReportEdge!]!
+}
+type ReportEdge { cursor: String!  node: Report }
+
+# ─────────────────────────────────────────────
+# Webhooks (Webhook type exists; url CONFIRMED on export)
+# ─────────────────────────────────────────────
+
+type Webhook implements Node {
+  id: ID!
+  url: URL!                   # CONFIRMED (export completion callback)
+  event: String               # modeled
+  active: Boolean             # modeled
+}
+
+# ─────────────────────────────────────────────
+# Input types
+# ─────────────────────────────────────────────
+
+input WebhookInput {
+  url: URL!                   # CONFIRMED shape on export parameters
+}
+
+input CreateExportParametersInput {
+  layer: ExportLayer!         # CONFIRMED required
+  projection: String
+  merge: Boolean
+  contourInterval: Float
+  fileFormat: ExportFileFormat
+  resolution: Float
+  webhook: WebhookInput       # CONFIRMED
+}
+
+"""CONFIRMED: createExport(input: CreateExportInput!) with planId + parameters."""
+input CreateExportInput {
+  planId: ID!                                 # CONFIRMED
+  parameters: CreateExportParametersInput!    # CONFIRMED
+}
+
+input CreateProjectInput {
+  name: String!
+  location: JSON
+}
+
+input CreatePlanInput {
+  projectId: ID!
+  name: String!
+  geometry: JSON
+}
+
+input CreateIssueInput {
+  planId: ID!
+  title: String!
+  description: String
+  type: AnnotationType
+  geometry: JSON
+}
+
+"""CONFIRMED type name (UpdateIssueInput appears in the schema reference)."""
+input UpdateIssueInput {
+  id: ID!
+  title: String
+  description: String
+  status: IssueStatus
+  geometry: JSON
+}
+
+input UploadImagesInput {
+  planId: ID!
+  images: [Upload!]!
+}
+
+input CreateWebhookInput {
+  event: String!
+  url: URL!
+}
+
+# ─────────────────────────────────────────────
+# Mutation payloads
+# ─────────────────────────────────────────────
+
+type CreateExportPayload { export: Export }      # CONFIRMED (returns export { id })
+type CreateProjectPayload { project: Project }
+type CreatePlanPayload { plan: MapPlan }
+type CreateIssuePayload { issue: Issue }
+type UpdateIssuePayload { issue: Issue }
+type UploadImagesPayload { plan: MapPlan }
+type CreateWebhookPayload { webhook: Webhook }
+
+# ─────────────────────────────────────────────
+# Roots
+# ─────────────────────────────────────────────
+
+type QueryRoot {
+  viewer: Viewer               # CONFIRMED
+  node(id: ID!): Node          # CONFIRMED
+}
+
+type MutationRoot {
+  createExport(input: CreateExportInput!): CreateExportPayload   # CONFIRMED
+  createProject(input: CreateProjectInput!): CreateProjectPayload # modeled
+  createPlan(input: CreatePlanInput!): CreatePlanPayload          # modeled
+  createIssue(input: CreateIssueInput!): CreateIssuePayload       # modeled
+  updateIssue(input: UpdateIssueInput!): UpdateIssuePayload       # modeled (input CONFIRMED)
+  uploadImages(input: UploadImagesInput!): UploadImagesPayload    # modeled
+  createWebhook(input: CreateWebhookInput!): CreateWebhookPayload # modeled
+}
+
+schema {
+  query: QueryRoot
+  mutation: MutationRoot
+}

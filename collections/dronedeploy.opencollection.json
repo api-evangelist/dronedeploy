@@ -1,0 +1,135 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "DroneDeploy GraphQL API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{apiKey}}"
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Users & Organizations", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get current viewer.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "query GetViewer { viewer { username } }" }
+          },
+          "docs": "CONFIRMED. Returns the currently authenticated user's username via the viewer root."
+        },
+        {
+          "info": { "name": "Get organization.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "query GetOrg { viewer { organization { id name } } }" }
+          },
+          "docs": "viewer.organization is CONFIRMED; the name field is modeled."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Projects & Plans", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List plans for your organization.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "query GetPlans { viewer { organization { plans(first: 50) { pageInfo { hasNextPage endCursor } edges { cursor node { name geometry { lat lng } location { lat lng } dateCreation } } } } } }" }
+          },
+          "docs": "CONFIRMED. Cursor-paginated list of plans in the organization. Use after: endCursor for the next page."
+        },
+        {
+          "info": { "name": "Get a single map plan.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "query GetMap { node(id: \"MapPlan:5a3d7badf014ce3db3c22391\") { ... on MapPlan { name location { lat lng } imageCount status } } }" }
+          },
+          "docs": "CONFIRMED. Fetch a MapPlan by id using node() plus an inline fragment."
+        },
+        {
+          "info": { "name": "Create a project (modeled).", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "mutation CreateProject($input: CreateProjectInput!) { createProject(input: $input) { project { id name } } }", "variables": "{ \"input\": { \"name\": \"North Site\" } }" }
+          },
+          "docs": "MODELED from MutationRoot. Verify exact input shape in the Enterprise GraphiQL console."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Maps & Exports", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Create an export.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "mutation CreateExport($input: CreateExportInput!) { createExport(input: $input) { export { id } } }", "variables": "{ \"input\": { \"planId\": \"5a0de0835f1e08eaabc732bd\", \"parameters\": { \"layer\": \"ORTHOMOSAIC\" } } }" }
+          },
+          "docs": "CONFIRMED. createExport takes planId + parameters (only layer required) and returns export.id. Poll until status is COMPLETE."
+        },
+        {
+          "info": { "name": "Fetch exports for a plan.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "query GetExports { node(id: \"MapPlan:5a0de0835f1e08eaabc732bd\") { ... on MapPlan { exports(first: 5) { edges { node { id user { username } parameters { projection merge contourInterval fileFormat resolution } status dateCreation downloadPath } } } } } }" }
+          },
+          "docs": "CONFIRMED. Lists exports on a MapPlan with status, parameters, and downloadPath."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Annotations & Issues", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Update an issue (modeled).", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "mutation UpdateIssue($input: UpdateIssueInput!) { updateIssue(input: $input) { issue { id title status } } }", "variables": "{ \"input\": { \"id\": \"Issue:REPLACE_ME\", \"status\": \"RESOLVED\" } }" }
+          },
+          "docs": "MODELED. The Issue type and UpdateIssueInput exist in the schema reference; exact fields verified in GraphiQL."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Uploads & Images", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get image count for a plan.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "query GetImageCount { node(id: \"MapPlan:5a3d7badf014ce3db3c22391\") { ... on MapPlan { imageCount } } }" }
+          },
+          "docs": "CONFIRMED. MapPlan.imageCount. Uploading new imagery uses DroneDeploy's presigned upload flow (modeled)."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Webhooks", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Create export with completion webhook.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://www.dronedeploy.com/graphql",
+            "body": { "type": "graphql", "query": "mutation CreateExport($input: CreateExportInput!) { createExport(input: $input) { export { id } } }", "variables": "{ \"input\": { \"planId\": \"5a0de0835f1e08eaabc732bd\", \"parameters\": { \"layer\": \"ORTHOMOSAIC\", \"webhook\": { \"url\": \"https://example.com/hooks/dronedeploy\" } } } }" }
+          },
+          "docs": "CONFIRMED. A webhook.url in export parameters is called when the export reaches COMPLETE."
+        }
+      ]
+    }
+  ]
+}

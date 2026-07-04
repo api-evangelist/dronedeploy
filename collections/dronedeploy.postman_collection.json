@@ -1,0 +1,210 @@
+{
+  "info": {
+    "name": "DroneDeploy GraphQL API",
+    "description": "GraphQL API for the DroneDeploy drone mapping, reality capture, and aerial analytics platform. Single endpoint https://www.dronedeploy.com/graphql (POST), authenticated with an Authorization: Bearer <api_key> header (Enterprise / Developer Partner accounts only). Queries are rooted at `viewer` and objects are fetched by `node(id)`; results use Relay cursor pagination (first/after, pageInfo, edges/node). Requests marked (modeled) approximate operations not shown verbatim in the public docs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{apiKey}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://www.dronedeploy.com/graphql", "type": "string" },
+    { "key": "apiKey", "value": "", "type": "string" },
+    { "key": "mapPlanId", "value": "MapPlan:5a3d7badf014ce3db3c22391", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Users & Organizations",
+      "item": [
+        {
+          "name": "Get current viewer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetViewer {\n  viewer {\n    username\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "CONFIRMED. Returns the currently authenticated user's username via the viewer root."
+          }
+        },
+        {
+          "name": "Get organization",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetOrg {\n  viewer {\n    organization {\n      id\n      name\n    }\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "viewer.organization is CONFIRMED; the name field is modeled."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects & Plans",
+      "item": [
+        {
+          "name": "List plans for your organization",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetPlans {\n  viewer {\n    organization {\n      plans(first: 50) {\n        pageInfo { hasNextPage endCursor }\n        edges {\n          cursor\n          node {\n            name\n            geometry { lat lng }\n            location { lat lng }\n            dateCreation\n          }\n        }\n      }\n    }\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "CONFIRMED. Cursor-paginated list of plans in the organization. Use `after: endCursor` for the next page."
+          }
+        },
+        {
+          "name": "Get a single map plan",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetMap {\n  node(id: \"{{mapPlanId}}\") {\n    ... on MapPlan {\n      name\n      location { lat lng }\n      imageCount\n      status\n    }\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "CONFIRMED. Fetch a MapPlan by id using node() plus an inline fragment."
+          }
+        },
+        {
+          "name": "Create a project (modeled)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateProject($input: CreateProjectInput!) {\n  createProject(input: $input) {\n    project { id name }\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"name\": \"North Site\"\n  }\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "MODELED from MutationRoot. Verify exact input shape in the Enterprise GraphiQL console."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Maps & Exports",
+      "item": [
+        {
+          "name": "Create an export",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateExport($input: CreateExportInput!) {\n  createExport(input: $input) {\n    export { id }\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"planId\": \"5a0de0835f1e08eaabc732bd\",\n    \"parameters\": {\n      \"layer\": \"ORTHOMOSAIC\"\n    }\n  }\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "CONFIRMED. createExport takes planId + parameters (only layer is required) and returns export.id. Poll until status is COMPLETE."
+          }
+        },
+        {
+          "name": "Fetch exports for a plan",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetExports {\n  node(id: \"MapPlan:5a0de0835f1e08eaabc732bd\") {\n    ... on MapPlan {\n      exports(first: 5) {\n        edges {\n          node {\n            id\n            user { username }\n            parameters {\n              projection\n              merge\n              contourInterval\n              fileFormat\n              resolution\n            }\n            status\n            dateCreation\n            downloadPath\n          }\n        }\n      }\n    }\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "CONFIRMED. Lists exports on a MapPlan with status, parameters, and downloadPath."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Annotations & Issues",
+      "item": [
+        {
+          "name": "Update an issue (modeled)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation UpdateIssue($input: UpdateIssueInput!) {\n  updateIssue(input: $input) {\n    issue { id title status }\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"id\": \"Issue:REPLACE_ME\",\n    \"status\": \"RESOLVED\"\n  }\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "MODELED. The Issue type and UpdateIssueInput exist in the schema reference; exact fields verified in GraphiQL."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Uploads & Images",
+      "item": [
+        {
+          "name": "Get image count for a plan",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "query GetImageCount {\n  node(id: \"{{mapPlanId}}\") {\n    ... on MapPlan {\n      imageCount\n    }\n  }\n}",
+                "variables": ""
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "CONFIRMED. MapPlan.imageCount. Uploading new imagery uses DroneDeploy's presigned upload flow (modeled)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Create export with completion webhook",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "graphql",
+              "graphql": {
+                "query": "mutation CreateExport($input: CreateExportInput!) {\n  createExport(input: $input) {\n    export { id }\n  }\n}",
+                "variables": "{\n  \"input\": {\n    \"planId\": \"5a0de0835f1e08eaabc732bd\",\n    \"parameters\": {\n      \"layer\": \"ORTHOMOSAIC\",\n      \"webhook\": { \"url\": \"https://example.com/hooks/dronedeploy\" }\n    }\n  }\n}"
+              }
+            },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "CONFIRMED. A webhook.url in export parameters is called when the export reaches COMPLETE."
+          }
+        }
+      ]
+    }
+  ]
+}

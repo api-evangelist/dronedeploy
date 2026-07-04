@@ -1,0 +1,236 @@
+aid: dronedeploy
+url: https://raw.githubusercontent.com/api-evangelist/dronedeploy/refs/heads/main/apis.yml
+name: DroneDeploy
+kind: company
+description: DroneDeploy is a drone mapping, reality capture, and aerial analytics
+  platform for construction, energy, agriculture, and inspection. Its developer
+  platform is a GraphQL API (endpoint https://www.dronedeploy.com/graphql) that lets
+  Enterprise and Developer Partner accounts query and mutate DroneDeploy data -
+  organizations, projects, map plans, exports, annotations/issues, images, and
+  webhooks - using a single strongly typed, Relay-style (cursor-paginated) schema
+  rooted at the `viewer` object. A set of legacy REST APIs (Map Processing / Map
+  Engine as a Service, Plan API, Export API) also remains available, but DroneDeploy
+  recommends the GraphQL API for most integrations.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Drone Mapping
+- Reality Capture
+- Aerial Analytics
+- Geospatial
+- GraphQL
+- Photogrammetry
+created: '2026-07-04'
+modified: '2026-07-04'
+specificationVersion: '0.19'
+apis:
+- aid: dronedeploy:dronedeploy-projects-and-plans-api
+  name: DroneDeploy Projects and Plans API
+  tags:
+  - Projects
+  - Plans
+  - MapPlan
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer-docs.dronedeploy.com/api/examples/fetching-all-plans-for-your-organization
+  baseURL: https://www.dronedeploy.com/graphql
+  properties:
+  - url: https://developer-docs.dronedeploy.com/api/introduction
+    type: Documentation
+  - url: https://developer-docs.dronedeploy.com/api/examples/fetching-all-plans-for-your-organization
+    type: APIReference
+  - url: graphql/dronedeploy-graphql.md
+    type: GraphQL
+  - url: graphql/dronedeploy-schema.graphql
+    type: GraphQL
+  - url: collections/dronedeploy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/dronedeploy.opencollection.json
+    type: OpenCollection
+  description: Query the projects and plans (MapPlan) in an organization through
+    `viewer.organization.plans`/`projects` and the `node(id)` lookup - reading name,
+    location and geometry (lat/lng), dateCreation, imageCount, and processing status -
+    with cursor-based pagination. Plan/project creation and update mutations are
+    modeled from the schema's MutationRoot.
+- aid: dronedeploy:dronedeploy-maps-and-exports-api
+  name: DroneDeploy Maps and Exports API
+  tags:
+  - Maps
+  - Exports
+  - Reality Capture
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer-docs.dronedeploy.com/api/examples/creating-an-export
+  baseURL: https://www.dronedeploy.com/graphql
+  properties:
+  - url: https://developer-docs.dronedeploy.com/api/examples/creating-an-export
+    type: Documentation
+  - url: https://developer-docs.dronedeploy.com/api/examples/fetching-exports
+    type: APIReference
+  - url: graphql/dronedeploy-graphql.md
+    type: GraphQL
+  - url: graphql/dronedeploy-schema.graphql
+    type: GraphQL
+  - url: collections/dronedeploy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/dronedeploy.opencollection.json
+    type: OpenCollection
+  description: Generate and retrieve map exports from a MapPlan. The confirmed
+    `createExport(input CreateExportInput!)` mutation takes a planId plus parameters
+    (layer required; projection, merge, contourInterval, fileFormat, resolution, and an
+    optional completion webhook) and returns an export id; `MapPlan.exports` returns
+    export status, dateCreation, and downloadPath once processing reaches COMPLETE.
+- aid: dronedeploy:dronedeploy-annotations-and-issues-api
+  name: DroneDeploy Annotations and Issues API
+  tags:
+  - Annotations
+  - Issues
+  - Markups
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer-docs.dronedeploy.com/api/introduction
+  baseURL: https://www.dronedeploy.com/graphql
+  properties:
+  - url: https://developer-docs.dronedeploy.com/api/introduction
+    type: Documentation
+  - url: https://developer.dronedeploy.com/reference/updateissueinput.doc.html
+    type: APIReference
+  - url: graphql/dronedeploy-graphql.md
+    type: GraphQL
+  - url: graphql/dronedeploy-schema.graphql
+    type: GraphQL
+  - url: collections/dronedeploy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/dronedeploy.opencollection.json
+    type: OpenCollection
+  description: Create, read, and update annotations and Issues (field markups tied to a
+    plan's map - points, lines, polygons, and their notes/attachments) through the
+    schema's Issue type and its Create/Update input types (e.g. UpdateIssueInput).
+    Modeled from the reference schema; field-level shapes are gated behind the
+    Enterprise console.
+- aid: dronedeploy:dronedeploy-uploads-and-images-api
+  name: DroneDeploy Uploads and Images API
+  tags:
+  - Uploads
+  - Images
+  - Photogrammetry
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer-docs.dronedeploy.com/api/introduction
+  baseURL: https://www.dronedeploy.com/graphql
+  properties:
+  - url: https://developer-docs.dronedeploy.com/api/introduction
+    type: Documentation
+  - url: https://developer-docs.dronedeploy.com/api/examples/fetching-a-single-object
+    type: APIReference
+  - url: graphql/dronedeploy-graphql.md
+    type: GraphQL
+  - url: graphql/dronedeploy-schema.graphql
+    type: GraphQL
+  - url: collections/dronedeploy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/dronedeploy.opencollection.json
+    type: OpenCollection
+  description: Manage the source imagery behind a map. `MapPlan.imageCount` is confirmed;
+    image listing and upload/ingest mutations that add photos to a plan and trigger
+    map processing are modeled from the schema. Large binary uploads follow
+    DroneDeploy's presigned-upload flow rather than inline GraphQL payloads.
+- aid: dronedeploy:dronedeploy-users-and-organizations-api
+  name: DroneDeploy Users and Organizations API
+  tags:
+  - Users
+  - Organizations
+  - Viewer
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer-docs.dronedeploy.com/api/authentication
+  baseURL: https://www.dronedeploy.com/graphql
+  properties:
+  - url: https://developer-docs.dronedeploy.com/api/authentication
+    type: Documentation
+  - url: https://developer-docs.dronedeploy.com/api/introduction
+    type: APIReference
+  - url: graphql/dronedeploy-graphql.md
+    type: GraphQL
+  - url: graphql/dronedeploy-schema.graphql
+    type: GraphQL
+  - url: collections/dronedeploy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/dronedeploy.opencollection.json
+    type: OpenCollection
+  description: Resolve the authenticated account and its organization. The confirmed
+    `viewer` root returns the current user (e.g. username) and `viewer.organization`
+    exposes the org and its plans/projects collections. Member and role management
+    fields are modeled from the schema.
+- aid: dronedeploy:dronedeploy-reports-api
+  name: DroneDeploy Reports API
+  tags:
+  - Reports
+  - Analytics
+  - Exports
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer-docs.dronedeploy.com/api/introduction
+  baseURL: https://www.dronedeploy.com/graphql
+  properties:
+  - url: https://developer-docs.dronedeploy.com/api/introduction
+    type: Documentation
+  - url: https://developer-docs.dronedeploy.com/api/examples/creating-an-export
+    type: APIReference
+  - url: graphql/dronedeploy-graphql.md
+    type: GraphQL
+  - url: graphql/dronedeploy-schema.graphql
+    type: GraphQL
+  - url: collections/dronedeploy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/dronedeploy.opencollection.json
+    type: OpenCollection
+  description: Retrieve analytic and reporting artifacts derived from a plan -
+    volume/stockpile measurements, cut/fill, and generated report documents. Reports
+    are surfaced as a specialized export/report layer on MapPlan; the report types and
+    mutations here are modeled from the export schema and the platform's reporting
+    features.
+- aid: dronedeploy:dronedeploy-webhooks-api
+  name: DroneDeploy Webhooks API
+  tags:
+  - Webhooks
+  - Events
+  - Notifications
+  - GraphQL
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://developer-docs.dronedeploy.com/api/examples/creating-an-export
+  baseURL: https://www.dronedeploy.com/graphql
+  properties:
+  - url: https://developer-docs.dronedeploy.com/api/examples/creating-an-export
+    type: Documentation
+  - url: https://developer.dronedeploy.com/reference/webhook.doc.html
+    type: APIReference
+  - url: graphql/dronedeploy-graphql.md
+    type: GraphQL
+  - url: graphql/dronedeploy-schema.graphql
+    type: GraphQL
+  - url: collections/dronedeploy.postman_collection.json
+    type: PostmanCollection
+  - url: collections/dronedeploy.opencollection.json
+    type: OpenCollection
+  description: Register outbound webhooks so DroneDeploy notifies your endpoint when
+    long-running work finishes. Confirmed on the export flow, where a `webhook.url` set
+    inside CreateExportInput parameters is called when the export is COMPLETE. A
+    standalone Webhook type exists in the schema; subscribe/manage mutations are modeled.
+common:
+- type: GitHubOrganization
+  url: https://github.com/dronedeploy
+- type: LinkedIn
+  url: https://www.linkedin.com/company/dronedeploy
+- type: Website
+  url: https://www.dronedeploy.com/
+- type: Documentation
+  url: https://developer-docs.dronedeploy.com/api/introduction
+- type: Plans
+  url: plans/dronedeploy-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/dronedeploy-rate-limits.yml
+- type: FinOps
+  url: finops/dronedeploy-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

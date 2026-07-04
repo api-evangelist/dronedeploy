@@ -1,0 +1,65 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: DroneDeploy
+providerId: dronedeploy
+created: '2026-07-04'
+modified: '2026-07-04'
+reconciled: false
+tags:
+- Drone Mapping
+- Reality Capture
+- GraphQL
+- Rate Limiting
+- Quotas
+description: >-
+  DroneDeploy does not publish fixed numeric rate limits for its GraphQL API in the
+  public developer documentation. Practical throughput is governed more by
+  cursor-based pagination (the `first` argument caps the number of results per query,
+  with examples using page sizes of 5-50) and by asynchronous, long-running
+  processing (map exports and reports must reach status COMPLETE before a downloadPath
+  is available) than by a per-minute request cap. Because API access is Enterprise /
+  Developer Partner only, any enforced quotas are typically set per contract.
+notes: >-
+  No documented per-minute or per-hour GraphQL request quota as of the review date.
+  Confirm any account-level limits, maximum `first` page size, and export/processing
+  concurrency with DroneDeploy Support for your Enterprise or Developer Partner
+  account during reconciliation.
+sources:
+- https://developer-docs.dronedeploy.com/api/introduction
+- https://developer-docs.dronedeploy.com/api/pagination
+- https://developer-docs.dronedeploy.com/api/authentication
+- https://developer-docs.dronedeploy.com/api/examples/creating-an-export
+responseCodes:
+  throttled: 429
+limits:
+- name: GraphQL API Requests
+  scope: account
+  metric: requests
+  limit: not published
+  notes: No fixed numeric request-rate limit is documented for the GraphQL endpoint; limits, if any, are set per Enterprise/Developer Partner contract.
+- name: Pagination Page Size
+  scope: query
+  metric: results
+  limit: bounded by `first` argument
+  notes: Relay connections cap results via `first`; documented examples use first=5 and first=50. Retrieve more with `after` + endCursor.
+- name: Export Processing
+  scope: account
+  metric: exports
+  limit: asynchronous
+  notes: createExport is async; poll export status until COMPLETE before using downloadPath. Concurrency is contract-dependent.
+- name: Processing Volume
+  scope: account
+  metric: gigapixels
+  limit: per plan
+  notes: Map processing is metered by images-per-map and annual Gigapixel allowances tied to the subscription tier, not by API request rate.
+policies:
+- name: Cursor Pagination
+  description: Use `first` with `after`/endCursor for forward pagination; check pageInfo.hasNextPage to know when to stop.
+- name: Asynchronous Processing
+  description: Exports and reports are long-running; create the job, then poll for status COMPLETE (or register a completion webhook) rather than blocking.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on any 429 responses.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

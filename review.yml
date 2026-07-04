@@ -1,0 +1,91 @@
+aid: dronedeploy
+name: DroneDeploy
+review:
+  question: Does DroneDeploy expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-04'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. DroneDeploy's documented developer surface is
+    a synchronous GraphQL API (POST https://www.dronedeploy.com/graphql) plus a set
+    of legacy REST APIs. There is no server-push transport (WebSocket or SSE) on
+    DroneDeploy's own API to model. Asynchronous work (map exports, reports) is
+    handled by client polling of an object's `status` until COMPLETE, or by an
+    optional outbound completion webhook (DroneDeploy POSTing to a URL you supply) -
+    neither of which is a WebSocket or a client-consumable event-stream endpoint.
+findings:
+  summary: |
+    DroneDeploy does not publish a documented public WebSocket API. DroneDeploy is a
+    drone mapping, reality capture, and aerial analytics platform. Its developer
+    platform is a GraphQL API served at https://www.dronedeploy.com/graphql over
+    HTTPS with POST requests, authenticated by an `Authorization: Bearer <api_key>`
+    header (API keys are issued only to Enterprise and Developer Partner accounts).
+    The schema is rooted at a `viewer` object with a `node(id)` lookup and uses
+    Relay-style cursor pagination. A set of legacy REST APIs (Map Processing / Map
+    Engine as a Service, Plan API, Export API) also exists over HTTPS. Long-running
+    operations such as `createExport` are asynchronous: clients either poll the
+    export/report `status` field until it reads COMPLETE (then read `downloadPath`),
+    or supply an outbound `webhook.url` in the export parameters that DroneDeploy
+    calls on completion. No realtime, bidirectional, or streaming WebSocket
+    (ws:// or wss://) endpoint is documented anywhere in DroneDeploy's developer
+    documentation as of the review date.
+  transports:
+    - protocol: GraphQL
+      scheme: https
+      baseURL: https://www.dronedeploy.com/graphql
+      documented: true
+      note: Primary developer API. POST GraphQL over HTTPS, Bearer auth, Relay cursor pagination. Enterprise / Developer Partner only.
+    - protocol: REST
+      scheme: https
+      documented: true
+      note: Legacy REST APIs (Map Processing / Map Engine as a Service, Plan API, Export API) remain available; GraphQL is recommended for most integrations.
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: Outbound completion callback - a webhook.url set in CreateExportInput parameters is POSTed by DroneDeploy when an export reaches COMPLETE. Server-to-endpoint HTTP, not WebSocket.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in DroneDeploy's GraphQL or REST developer documentation as of the review date. GraphQL subscriptions are not offered.
+  endpointsConfirmed:
+    - POST https://www.dronedeploy.com/graphql (query viewer { username })
+    - POST https://www.dronedeploy.com/graphql (query viewer.organization.plans(first, after))
+    - POST https://www.dronedeploy.com/graphql (query node(id:"MapPlan:...") ... on MapPlan { name location imageCount status })
+    - POST https://www.dronedeploy.com/graphql (query MapPlan.exports(first) { id status parameters downloadPath })
+    - POST https://www.dronedeploy.com/graphql (mutation createExport(input CreateExportInput!) { export { id } })
+  endpointsModeled:
+    - POST https://www.dronedeploy.com/graphql (mutation createProject / createPlan)
+    - POST https://www.dronedeploy.com/graphql (mutation createIssue / updateIssue for annotations)
+    - POST https://www.dronedeploy.com/graphql (mutation uploadImages / presigned image upload)
+    - POST https://www.dronedeploy.com/graphql (mutation createWebhook for standalone webhook subscriptions)
+    - POST https://www.dronedeploy.com/graphql (query MapPlan.reports for report artifacts)
+sources:
+  - url: https://developer-docs.dronedeploy.com/api/introduction
+    type: Documentation
+    note: GraphQL is the primary API; endpoint https://www.dronedeploy.com/graphql; viewer example. No WebSocket mentioned.
+  - url: https://developer-docs.dronedeploy.com/api/authentication
+    type: Documentation
+    note: Authorization Bearer header; API keys issued to Enterprise / Developer Partner accounts via Sales/Support.
+  - url: https://developer-docs.dronedeploy.com/api/pagination
+    type: Documentation
+    note: Relay cursor pagination - first, after, pageInfo (hasNextPage, endCursor), edges/node/cursor.
+  - url: https://developer-docs.dronedeploy.com/api/examples/creating-an-export
+    type: APIReference
+    note: createExport(input CreateExportInput!) with planId + parameters (layer required); optional webhook.url completion callback.
+  - url: https://developer-docs.dronedeploy.com/api/examples/fetching-exports
+    type: APIReference
+    note: MapPlan.exports connection with id, user, parameters, status, dateCreation, downloadPath.
+  - url: https://developer.dronedeploy.com/reference/
+    type: APIReference
+    note: GraphQL schema reference (QueryRoot / MutationRoot); Webhook and Issue/UpdateIssueInput types present. Full schema gated behind Enterprise GraphiQL.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. DroneDeploy's own public API is a
+    synchronous GraphQL API (plus legacy REST); asynchronous export/report work is
+    handled by client polling of a status field or by an outbound completion webhook,
+    not by a server-push stream. No AsyncAPI document was created because there is no
+    WebSocket or SSE transport on DroneDeploy's own API to model, and GraphQL
+    subscriptions are not offered.
