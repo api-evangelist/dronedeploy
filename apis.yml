@@ -217,6 +217,8 @@ apis:
     inside CreateExportInput parameters is called when the export is COMPLETE. A
     standalone Webhook type exists in the schema; subscribe/manage mutations are modeled.
 common:
+- type: DomainSecurity
+  url: security/dronedeploy-domain-security.yml
 - type: GitHubOrganization
   url: https://github.com/dronedeploy
 - type: LinkedIn
