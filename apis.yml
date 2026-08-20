@@ -38,6 +38,11 @@ apis:
 - aid: dronedeploy:dronedeploy-projects-and-plans-api
   name: DroneDeploy Projects and Plans API
   tags:
+  - Project
+  - Plans
+  - MapPlan
+  - GraphQL
+  tags_raw:
   - Projects
   - Plans
   - MapPlan
@@ -66,6 +71,11 @@ apis:
 - aid: dronedeploy:dronedeploy-maps-and-exports-api
   name: DroneDeploy Maps and Exports API
   tags:
+  - Maps
+  - Export
+  - Reality Capture
+  - GraphQL
+  tags_raw:
   - Maps
   - Exports
   - Reality Capture
@@ -123,6 +133,11 @@ apis:
   name: DroneDeploy Uploads and Images API
   tags:
   - Uploads
+  - Image
+  - Photogrammetry
+  - GraphQL
+  tags_raw:
+  - Uploads
   - Images
   - Photogrammetry
   - GraphQL
@@ -149,6 +164,11 @@ apis:
 - aid: dronedeploy:dronedeploy-users-and-organizations-api
   name: DroneDeploy Users and Organizations API
   tags:
+  - User
+  - Organization
+  - Viewer
+  - GraphQL
+  tags_raw:
   - Users
   - Organizations
   - Viewer
@@ -178,6 +198,11 @@ apis:
   tags:
   - Reports
   - Analytics
+  - Export
+  - GraphQL
+  tags_raw:
+  - Reports
+  - Analytics
   - Exports
   - GraphQL
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
@@ -204,6 +229,11 @@ apis:
 - aid: dronedeploy:dronedeploy-webhooks-api
   name: DroneDeploy Webhooks API
   tags:
+  - Webhook
+  - Event
+  - Notification
+  - GraphQL
+  tags_raw:
   - Webhooks
   - Events
   - Notifications
