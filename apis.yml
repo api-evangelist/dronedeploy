@@ -11,6 +11,17 @@ description: DroneDeploy is a drone mapping, reality capture, and aerial analyti
   rooted at the `viewer` object. A set of legacy REST APIs (Map Processing / Map
   Engine as a Service, Plan API, Export API) also remains available, but DroneDeploy
   recommends the GraphQL API for most integrations.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: unknown
