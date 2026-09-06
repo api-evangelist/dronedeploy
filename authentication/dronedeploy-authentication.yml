@@ -1,0 +1,16 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/drone-deploy-graphql-api-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: API Key
+  description: 'DroneDeploy API key sent as `Authorization: Bearer <api_key>`. Keys are issued
+    by DroneDeploy Support (existing developers) or Sales (Developer Partner / Enterprise accounts).
+    The same key is used for all GraphQL operations and is tied to the issuing user''s account.'
+  sources:
+  - openapi/drone-deploy-graphql-api-openapi.yml

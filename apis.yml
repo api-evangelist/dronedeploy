@@ -270,6 +270,42 @@ apis:
     inside CreateExportInput parameters is called when the export is COMPLETE. A
     standalone Webhook type exists in the schema; subscribe/manage mutations are modeled.
 common:
+- type: PostmanWorkspace
+  url: https://www.postman.com/kinlaneapi/dronedeploy/overview
+- type: AgenticAccess
+  url: agentic-access/dronedeploy-agentic-access.yml
+- type: Authentication
+  url: authentication/dronedeploy-authentication.yml
+- type: Portal
+  url: https://www.dronedeploy.com
+- type: Sandbox
+  url: https://www.dronedeploy.com/graphiql/
+- type: StatusPage
+  url: https://status.dronedeploy.com
+- type: Signup
+  url: https://www.dronedeploy.com/get-started
+- type: Login
+  url: https://www.dronedeploy.com/app2/auth/signin
+- type: Support
+  url: https://help.dronedeploy.com/hc/en-us
+- type: TermsOfService
+  url: https://www.dronedeploy.com/legal/master-services-agreement
+- type: PrivacyPolicy
+  url: https://www.dronedeploy.com/legal/privacy
+- type: Blog
+  url: https://www.dronedeploy.com/blog
+- type: Careers
+  url: https://www.dronedeploy.com/about/careers
+- type: AboutUs
+  url: https://www.dronedeploy.com/about
+- type: AppMarket
+  url: https://www.dronedeploy.com/product/market
+- type: X
+  url: https://twitter.com/dronedeploy
+- type: YouTube
+  url: https://www.youtube.com/c/DroneDeploy
+- type: Trial
+  url: https://www.dronedeploy.com/get-started
 - type: DomainSecurity
   url: security/dronedeploy-domain-security.yml
 - type: GitHubOrganization
