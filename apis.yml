@@ -115,6 +115,11 @@ apis:
 - aid: dronedeploy:dronedeploy-annotations-and-issues-api
   name: DroneDeploy Annotations and Issues API
   tags:
+  - Annotation
+  - Issues
+  - Markups
+  - GraphQL
+  tags_raw:
   - Annotations
   - Issues
   - Markups
