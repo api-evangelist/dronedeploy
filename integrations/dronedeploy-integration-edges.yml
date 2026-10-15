@@ -1,6 +1,9 @@
 generated: '2026-10-14'
 method: searched
 checked:
+- https://aggateway.org/AboutUs/Members.aspx
+- https://agrirouter.com/en/solutions
+- https://climate.com/en-us/partners.html
 - procore/integrations/procore-integration-edges.yml
 source:
 - procore/integrations/procore-integration-edges.yml
@@ -22,3 +25,18 @@ edges:
   detected: '2026-10-14'
   detected_by: mirror-platform-listings.py
   category: Drones; Progress Documentation; Quality & Safety
+- partner_name: Climate FieldView (connected partners)
+  partner: climate-fieldview
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://climate.com/en-us/partners/dronedeploy.html
+  mirror_of: climate-fieldview/integrations/climate-fieldview-integration-edges.yml
+  apps:
+  - DroneDeploy
+  detected: '2026-10-15'
+  detected_by: sweep-agriculture-food.py
