@@ -16,3 +16,28 @@
   relationship: platform-app
   status: not-a-workflow
   arazzo: null
+- slug: dronedeploy-climate-fieldview-connected-partners
+  label: Climate FieldView (connected partners)
+  partner: climate-fieldview
+  partner_name: Climate FieldView (connected partners)
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://climate.com/en-us/partners/dronedeploy.html
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: dronedeploy-autodesk-own
+  label: Autodesk (own)
+  partner: autodesk
+  partner_name: Autodesk (own)
+  category: ACCBD5K/BIM360/BM36DP
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://marketplace.autodesk.com/apps/cf6228ad-19d7-4ca7-98ed-eb0b25a38e42
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
