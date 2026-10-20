@@ -1,31 +1,15 @@
 generated: '2026-10-14'
 method: searched
 checked:
+- autodesk/integrations/autodesk-integration-edges.yml
 - https://aggateway.org/AboutUs/Members.aspx
 - https://agrirouter.com/en/solutions
 - https://climate.com/en-us/partners.html
 - https://marketplace.autodesk.com/sitemap.xml
-- procore/integrations/procore-integration-edges.yml
+- https://www.aef-online.org/membership/memberlist.html
 source:
-- procore/integrations/procore-integration-edges.yml
+- autodesk/integrations/autodesk-integration-edges.yml
 edges:
-- partner_name: Procore (own)
-  partner: procore
-  partner_match: mirror
-  mirror_match: domain
-  type: marketplace
-  relationship: platform-app
-  direction: third-party
-  channel: partner-built
-  marketplace: own
-  evidence: https://marketplace.procore.com/apps/dronedeploy
-  mirror_of: procore/integrations/procore-integration-edges.yml
-  apps:
-  - DroneDeploy
-  listing_count: 1
-  detected: '2026-10-14'
-  detected_by: mirror-platform-listings.py
-  category: Drones; Progress Documentation; Quality & Safety
 - partner_name: Climate FieldView (connected partners)
   partner: climate-fieldview
   partner_match: mirror
