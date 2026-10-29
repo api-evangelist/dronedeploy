@@ -1,4 +1,4 @@
-# DroneDeploy (dronedeploy)
+# DroneDeploy
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,111 +64,141 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-DroneDeploy is a drone mapping, reality capture, and aerial analytics platform for construction, energy, agriculture, and inspection. Its developer platform is a **GraphQL API** (endpoint `https://www.dronedeploy.com/graphql`) that lets Enterprise and Developer Partner accounts query and mutate DroneDeploy data - organizations, projects, map plans, exports, annotations/issues, images, and webhooks - through one strongly typed, Relay-style (cursor-paginated) schema rooted at the `viewer` object and resolved by `node(id)`. A set of legacy REST APIs (Map Processing / Map Engine as a Service, Plan API, Export API) also remains available, but DroneDeploy recommends the GraphQL API for most integrations.
+DroneDeploy is a drone mapping, reality capture, and aerial analytics platform for construction, energy, agriculture, and inspection. Its developer platform is a GraphQL API (endpoint https://www.dronedeploy.com/graphql) that lets Enterprise and Developer Partner accounts query and mutate DroneDeploy data - organizations, projects, map plans, exports, annotations/issues, images, and webhooks - using a single strongly typed, Relay-style (cursor-paginated) schema rooted at the `viewer` object. A set of legacy REST APIs (Map Processing / Map Engine as a Service, Plan API, Export API) also remains available, but DroneDeploy recommends the GraphQL API for most integrations.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/dronedeploy/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/dronedeploy/refs/heads/main/apis.yml)
+**Areas:** Drone Mapping · Reality Capture · Aerial Analytics · Geospatial · GraphQL · Photogrammetry
 
-## Tags
+## DroneDeploy on APIs.io
 
-- Drone Mapping
-- Reality Capture
-- Aerial Analytics
-- Geospatial
-- GraphQL
-- Photogrammetry
+Everything profiled for DroneDeploy is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/dronedeploy/](https://apis.io/providers/dronedeploy/)** — or go straight to one of the APIs or properties below.
 
-## Timestamps
+### APIs (7)
 
-- **Created:** 2026-07-04
-- **Modified:** 2026-07-04
+- [DroneDeploy Projects and Plans API](https://apis.io/apis/dronedeploy/dronedeploy-projects-and-plans-api/) — Query the projects and plans (MapPlan) in an organization through `viewer.organization.plans`/`projects` and the `node(id)` lookup - reading name, location…
+- [DroneDeploy Maps and Exports API](https://apis.io/apis/dronedeploy/dronedeploy-maps-and-exports-api/) — Generate and retrieve map exports from a MapPlan. The confirmed `createExport(input CreateExportInput!)` mutation takes a planId plus parameters (layer…
+- [DroneDeploy Annotations and Issues API](https://apis.io/apis/dronedeploy/dronedeploy-annotations-and-issues-api/) — Create, read, and update annotations and Issues (field markups tied to a plan's map - points, lines, polygons, and their notes/attachments) through the…
+- [DroneDeploy Uploads and Images API](https://apis.io/apis/dronedeploy/dronedeploy-uploads-and-images-api/) — Manage the source imagery behind a map. `MapPlan.imageCount` is confirmed; image listing and upload/ingest mutations that add photos to a plan and trigger…
+- [DroneDeploy Users and Organizations API](https://apis.io/apis/dronedeploy/dronedeploy-users-and-organizations-api/) — Resolve the authenticated account and its organization. The confirmed `viewer` root returns the current user (e.g. username) and `viewer.organization`…
+- [DroneDeploy Reports API](https://apis.io/apis/dronedeploy/dronedeploy-reports-api/) — Retrieve analytic and reporting artifacts derived from a plan - volume/stockpile measurements, cut/fill, and generated report documents. Reports are…
+- [DroneDeploy Webhooks API](https://apis.io/apis/dronedeploy/dronedeploy-webhooks-api/) — Register outbound webhooks so DroneDeploy notifies your endpoint when long-running work finishes. Confirmed on the export flow, where a `webhook.url` set…
 
-## Authentication & Access
+### Published properties
 
-- **Endpoint:** `https://www.dronedeploy.com/graphql` (POST)
-- **Explorer:** https://www.dronedeploy.com/graphiql/
-- **Auth:** `Authorization: Bearer <api_key>` — API keys are issued only to Enterprise or Developer Partner accounts via DroneDeploy Sales/Support.
-- **Pagination:** Relay cursor connections — `first` / `after`, `pageInfo { hasNextPage endCursor }`, `edges { cursor node }`.
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### GraphQL (1)
 
-### DroneDeploy Projects and Plans API
+GraphQL schemas.
 
-Query the projects and plans (MapPlan) in an organization through `viewer.organization.plans`/`projects` and the `node(id)` lookup — name, location and geometry (lat/lng), dateCreation, imageCount, and status — with cursor pagination. Creation/update mutations are modeled.
+- [DroneDeploy GraphQL API](https://apis.io/graphqls/dronedeploy/dronedeploy-graphql/)
 
-- **Human URL:** [Fetching all Plans](https://developer-docs.dronedeploy.com/api/examples/fetching-all-plans-for-your-organization)
-- **Base URL:** `https://www.dronedeploy.com/graphql`
-- Tags: Projects, Plans, MapPlan, GraphQL
+#### MCP servers (1)
 
-### DroneDeploy Maps and Exports API
+Model Context Protocol servers that expose the API to agents.
 
-Generate and retrieve map exports from a MapPlan. The confirmed `createExport(input: CreateExportInput!)` mutation takes a planId plus parameters (layer required; projection, merge, contourInterval, fileFormat, resolution, optional completion webhook) and returns an export id; `MapPlan.exports` returns status, dateCreation, and downloadPath once processing reaches COMPLETE.
+- [dronedeploy](https://apis.io/servers/dronedeploy/dronedeploy/)
 
-- **Human URL:** [Creating an Export](https://developer-docs.dronedeploy.com/api/examples/creating-an-export)
-- **Base URL:** `https://www.dronedeploy.com/graphql`
-- Tags: Maps, Exports, Reality Capture, GraphQL
+#### Agentic access (1)
 
-### DroneDeploy Annotations and Issues API
+Which operations an agent can call, which act, and which need a human in the loop.
 
-Create, read, and update annotations and Issues (field markups tied to a plan — points, lines, polygons, notes/attachments) via the schema's Issue type and its input types (e.g. `UpdateIssueInput`). Modeled; field shapes are gated behind the Enterprise console.
+- [Dronedeploy Agentic Access](https://apis.io/agentic-access/dronedeploy/dronedeploy-agentic-access/)
 
-- **Human URL:** [API Introduction](https://developer-docs.dronedeploy.com/api/introduction)
-- **Base URL:** `https://www.dronedeploy.com/graphql`
-- Tags: Annotations, Issues, Markups, GraphQL
+#### Collections (1)
 
-### DroneDeploy Uploads and Images API
+Postman and Open Collection request collections.
 
-Manage the source imagery behind a map. `MapPlan.imageCount` is confirmed; image listing and upload/ingest mutations (which trigger map processing) are modeled. Large binaries follow DroneDeploy's presigned-upload flow rather than inline GraphQL payloads.
+- [DroneDeploy GraphQL API](https://apis.io/collections/dronedeploy/open-dronedeploy/)
 
-- **Human URL:** [API Introduction](https://developer-docs.dronedeploy.com/api/introduction)
-- **Base URL:** `https://www.dronedeploy.com/graphql`
-- Tags: Uploads, Images, Photogrammetry, GraphQL
+#### Security (2)
 
-### DroneDeploy Users and Organizations API
+Authentication, trust centre, and vulnerability disclosure.
 
-Resolve the authenticated account and its organization. The confirmed `viewer` root returns the current user (e.g. username) and `viewer.organization` exposes the org and its plans/projects collections. Member/role management fields are modeled.
+- [Dronedeploy Authentication](https://apis.io/security/dronedeploy/dronedeploy-authentication/)
+- [Dronedeploy Domain Security](https://apis.io/security/dronedeploy/dronedeploy-domain-security/)
 
-- **Human URL:** [Authentication](https://developer-docs.dronedeploy.com/api/authentication)
-- **Base URL:** `https://www.dronedeploy.com/graphql`
-- Tags: Users, Organizations, Viewer, GraphQL
+#### Plans and pricing (1)
 
-### DroneDeploy Reports API
+Published plans, tiers and prices.
 
-Retrieve analytic and reporting artifacts derived from a plan — volume/stockpile measurements, cut/fill, and generated report documents — surfaced as a specialized export/report layer on MapPlan. Report types and mutations are modeled from the export schema and platform features.
+- [Dronedeploy Plans Pricing](https://apis.io/plans/dronedeploy/dronedeploy-plans-pricing/)
 
-- **Human URL:** [API Introduction](https://developer-docs.dronedeploy.com/api/introduction)
-- **Base URL:** `https://www.dronedeploy.com/graphql`
-- Tags: Reports, Analytics, Exports, GraphQL
+#### Rate limits (1)
 
-### DroneDeploy Webhooks API
+Published request limits.
 
-Register outbound webhooks so DroneDeploy notifies your endpoint when long-running work finishes. Confirmed on the export flow, where a `webhook.url` in CreateExportInput parameters is called when the export is COMPLETE. A standalone Webhook type exists; subscribe/manage mutations are modeled.
+- [Dronedeploy Rate Limits](https://apis.io/rate-limits/dronedeploy/dronedeploy-rate-limits/)
 
-- **Human URL:** [Creating an Export](https://developer-docs.dronedeploy.com/api/examples/creating-an-export)
-- **Base URL:** `https://www.dronedeploy.com/graphql`
-- Tags: Webhooks, Events, Notifications, GraphQL
+#### FinOps (1)
 
-## Artifacts
+What the API costs to run, by operation.
 
-- [GraphQL Overview](graphql/dronedeploy-graphql.md)
-- [GraphQL Schema (partial / modeled)](graphql/dronedeploy-schema.graphql)
-- [Postman Collection](collections/dronedeploy.postman_collection.json)
-- [Open Collection](collections/dronedeploy.opencollection.json)
-- [Plans & Pricing](plans/dronedeploy-plans-pricing.yml)
-- [Rate Limits](rate-limits/dronedeploy-rate-limits.yml)
-- [FinOps](finops/dronedeploy-finops.yml)
-- [Review](review.yml)
+- [Dronedeploy Finops](https://apis.io/finops/dronedeploy/dronedeploy-finops/)
 
-## Common Properties
+## Where to find this API
 
-- [GitHub Organization](https://github.com/dronedeploy)
-- [LinkedIn](https://www.linkedin.com/company/dronedeploy)
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://www.dronedeploy.com/)
 - [Documentation](https://developer-docs.dronedeploy.com/api/introduction)
-- [Plans](plans/dronedeploy-plans-pricing.yml)
-- [Rate Limits](rate-limits/dronedeploy-rate-limits.yml)
-- [Fin Ops](finops/dronedeploy-finops.yml)
+- [Support](https://help.dronedeploy.com/hc/en-us)
+- [Blog](https://www.dronedeploy.com/blog)
+- [Terms of service](https://www.dronedeploy.com/legal/master-services-agreement)
+- [Privacy policy](https://www.dronedeploy.com/legal/privacy)
+- [GitHub](https://github.com/dronedeploy)
+- [Status](https://status.dronedeploy.com)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 29.9** — thin · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.3 |
+| Contract quality | 0.0 |
+| Contract governance | 0.0 |
+| Operational transparency | 26.3 |
+| Developer ergonomics | 56.7 |
+| Access clarity | 35.5 |
+
+**Agent readiness 17.2** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | — |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 19.6** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/dronedeploy/](https://apis.io/providers/dronedeploy/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for DroneDeploy: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/dronedeploy/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
